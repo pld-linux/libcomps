@@ -4,24 +4,26 @@
 # - convince upstream to fix SONAME: libcomps.so.0.1.6
 #
 # Conditional build:
-%bcond_without	doc		# don't build doc
+%bcond_without	doc	# don't build (doxygen and sphinx) docs
 %bcond_without	python2 # CPython 2.x module
 %bcond_without	python3 # CPython 3.x module
 
 Summary:	Comps XML file manipulation library
+Summary(pl.UTF-8):	Biblioteka operacji na plikach Comps XML
 Name:		libcomps
 Version:	0.1.6
 Release:	1
 License:	GPL v2+
-Group:		Development/Libraries
+Group:		Libraries
 Source0:	https://github.com/midnightercz/libcomps/archive/%{name}-%{version}.tar.gz
 # Source0-md5:	50611b9564f15b6a06e0f40f7683a0f0
+Patch0:		%{name}-link.patch
 URL:		https://github.com/midnightercz/libcomps/
 BuildRequires:	check-devel
 BuildRequires:	cmake >= 2.6
 %{?with_doc:BuildRequires:	doxygen}
-BuildRequires:	expat-devel
-BuildRequires:	libxml2-devel
+BuildRequires:	expat-devel >= 1.95
+BuildRequires:	libxml2-devel >= 2.0
 %{?with_python2:BuildRequires:	python-devel}
 %{?with_python2:BuildRequires:	python-modules}
 %{?with_python3:BuildRequires:	python3-devel}
@@ -30,82 +32,93 @@ BuildRequires:	rpm-pythonprov
 %{?with_doc:BuildRequires:	sphinx-pdg}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-# Unresolved symbols: log10
-%define		skip_post_check_so	libcomps.so.%{version}
-
 %description
 Libcomps is library for structure-like manipulation with content of
 comps XML files. Supports read/write XML file, structure(s)
 modification.
 
+%description -l pl.UTF-8
+Libcomps to bibliotek do operacji strukturalnych na treści plików
+comps XML. Obsługiwany jest odczyt i zapis pliku XML oraz modyfikacja
+struktury.
+
 %package devel
 Summary:	Development files for libcomps library
+Summary(pl.UTF-8):	Pliki programistyczne biblioteki libcomps
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
+Requires:	expat-devel >= 1.95
+Requires:	libxml2-devel >= 2.0
 
 %description devel
 Development files for libcomps library
 
+%description devel -l pl.UTF-8
+Pliki programistyczne biblioteki libcomps.
+
 %package -n python-libcomps
-Summary:	Python2 bindings for libcomps library
-Group:		Development/Libraries
+Summary:	Python 2.x bindings for libcomps library
+Summary(pl.UTF-8):	Wiązania Pythona 2.x do biblioteki libcomps
+Group:		Libraries/Python
 Requires:	%{name} = %{version}-%{release}
 
 %description -n python-libcomps
-Python2 bindings for libcomps library
+Python 2.x bindings for libcomps library.
+
+%description -n python-libcomps -l pl.UTF-8
+Wiązania Pythona 2.x do biblioteki libcomps.
 
 %package -n python3-libcomps
-Summary:	Python3 bindings for libcomps library
-Group:		Development/Libraries
+Summary:	Python 3.x bindings for libcomps library
+Summary(pl.UTF-8):	Wiązania Pythona 3.x do biblioteki libcomps
+Group:		Libraries/Python
 Requires:	%{name} = %{version}-%{release}
 
 %description -n python3-libcomps
-Python3 bindings for libcomps library
+Python 3.x bindings for libcomps library.
+
+%description -n python3-libcomps -l pl.UTF-8
+Wiązania Pythona 3.x do biblioteki libcomps.
 
 %prep
 %setup -qn %{name}-%{name}-%{version}
-
-%if %{with python3}
-rm -rf py3
-set -- *
-install -d py3
-cp -a "$@" py3
-%endif
+%patch0 -p1
 
 %build
-%cmake \
+install -d build
+cd build
+%cmake ../libcomps \
 	-DPYTHON_DESIRED:STRING=2 \
 	-DCMAKE_CXX_COMPILER_WORKS=1 \
-	-DCMAKE_CXX_COMPILER="%{__cc}" \
-	libcomps/
+	-DCMAKE_CXX_COMPILER="%{__cc}"
 
 %{__make}
 %{__make} docs
 %{__make} pydocs
+cd ..
 
 %if %{with python3}
-cd py3
-%cmake \
+install -d build-py3
+cd build-py3
+%cmake ../libcomps \
 	-DPYTHON_DESIRED:STRING=3 \
 	-DCMAKE_CXX_COMPILER_WORKS=1 \
-	-DCMAKE_CXX_COMPILER="%{__cc}" \
-	libcomps/
+	-DCMAKE_CXX_COMPILER="%{__cc}"
+
 %{__make}
-cd -
+cd ..
 %endif
 
 %if %{with tests}
-%{__make} test
+%{__make} -C build test
 %if %{with python3}
-cd py3
-%{__make} pytest
-cd -
+%{__make} -C build-py3 pytest
 %endif
 %endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
-%{__make} install \
+%{__make} -C build install \
 	DESTDIR=$RPM_BUILD_ROOT
 
 %py_ocomp $RPM_BUILD_ROOT%{py_sitedir}
@@ -113,14 +126,18 @@ rm -rf $RPM_BUILD_ROOT
 %py_postclean
 
 %if %{with python3}
-cd py3
-%{__make} install \
+%{__make} -C build-py3 install \
 	DESTDIR=$RPM_BUILD_ROOT
 
 %py3_ocomp $RPM_BUILD_ROOT%{py3_sitedir}
 %py3_comp $RPM_BUILD_ROOT%{py3_sitedir}
-cd -
 %endif
+
+install -d $RPM_BUILD_ROOT%{_pkgconfigdir}
+%{__sed} -e 's,^prefix=.*,prefix=%{_prefix},' \
+	-e 's,@LIB_SUFFIX@,%{_lib},' \
+	-e 's,@VERSION@,%{version},' \
+	libcomps.pc.in > $RPM_BUILD_ROOT%{_pkgconfigdir}/libcomps.pc
 
 /sbin/ldconfig -n $RPM_BUILD_ROOT%{_libdir}
 
@@ -137,19 +154,21 @@ rm -rf $RPM_BUILD_ROOT
 
 %files devel
 %defattr(644,root,root,755)
-%doc docs/libcomps-doc/html
-%doc src/python/docs/html
-%{_libdir}/libcomps.so
+%doc build/docs/libcomps-doc/html/*
+%attr(755,root,root) %{_libdir}/libcomps.so
 %{_includedir}/libcomps
+%{_pkgconfigdir}/libcomps.pc
 
 %files -n python-libcomps
 %defattr(644,root,root,755)
+%doc build/src/python/docs/html/{*.html,*.js,_images,_static}
 %dir %{py_sitedir}/libcomps
 %{py_sitedir}/libcomps/__init__.py[co]
 %attr(755,root,root) %{py_sitedir}/libcomps/_libpycomps.so
 
 %if %{with python3}
 %files -n python3-libcomps
+%doc build/src/python/docs/html/{*.html,*.js,_images,_static}
 %defattr(644,root,root,755)
 %dir %{py3_sitedir}/libcomps
 %{py3_sitedir}/libcomps/__init__.py
