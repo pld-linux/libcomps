@@ -18,13 +18,16 @@ Source0:	https://github.com/midnightercz/libcomps/archive/%{name}-%{version}.tar
 # Source0-md5:	50611b9564f15b6a06e0f40f7683a0f0
 URL:		https://github.com/midnightercz/libcomps/
 BuildRequires:	check-devel
-BuildRequires:	cmake
+BuildRequires:	cmake >= 2.6
 %{?with_doc:BuildRequires:	doxygen}
 BuildRequires:	expat-devel
 BuildRequires:	libxml2-devel
-%{?with_doc:BuildRequires:	python-Sphinx}
 %{?with_python2:BuildRequires:	python-devel}
+%{?with_python2:BuildRequires:	python-modules}
 %{?with_python3:BuildRequires:	python3-devel}
+%{?with_python3:BuildRequires:	python3-modules}
+BuildRequires:	rpm-pythonprov
+%{?with_doc:BuildRequires:	sphinx-pdg}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 # Unresolved symbols: log10
@@ -72,6 +75,8 @@ cp -a "$@" py3
 %build
 %cmake \
 	-DPYTHON_DESIRED:STRING=2 \
+	-DCMAKE_CXX_COMPILER_WORKS=1 \
+	-DCMAKE_CXX_COMPILER="%{__cc}" \
 	libcomps/
 
 %{__make}
@@ -82,6 +87,8 @@ cp -a "$@" py3
 cd py3
 %cmake \
 	-DPYTHON_DESIRED:STRING=3 \
+	-DCMAKE_CXX_COMPILER_WORKS=1 \
+	-DCMAKE_CXX_COMPILER="%{__cc}" \
 	libcomps/
 %{__make}
 cd -
