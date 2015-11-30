@@ -1,0 +1,22 @@
+diff -dur -x '*~' libcomps-libcomps-0.1.6.orig/libcomps/src/python/src/python2/CMakeLists.txt libcomps-libcomps-0.1.6/libcomps/src/python/src/python2/CMakeLists.txt
+--- libcomps-libcomps-0.1.6.orig/libcomps/src/python/src/python2/CMakeLists.txt	2014-01-29 12:10:07.000000000 +0100
++++ libcomps-libcomps-0.1.6/libcomps/src/python/src/python2/CMakeLists.txt	2015-11-30 18:24:47.545310413 +0100
+@@ -1,7 +1,6 @@
+ find_package (PythonLibs 2.7)
+ find_package (PythonInterp 2.7 REQUIRED)
+ 
+-execute_process (COMMAND ${PYTHON_EXECUTABLE} -c "from sys import stdout; from distutils import sysconfig; stdout.write(sysconfig.get_python_lib(True))" OUTPUT_VARIABLE PYTHON_INSTALL_DIR)
+ 
+ include_directories(${PYTHON_INCLUDE_PATH})
+ include_directories(${LIBCOMPS_INCLUDE_PATH})
+diff -dur -x '*~' libcomps-libcomps-0.1.6.orig/libcomps/src/python/src/python3/CMakeLists.txt libcomps-libcomps-0.1.6/libcomps/src/python/src/python3/CMakeLists.txt
+--- libcomps-libcomps-0.1.6.orig/libcomps/src/python/src/python3/CMakeLists.txt	2014-01-29 12:10:07.000000000 +0100
++++ libcomps-libcomps-0.1.6/libcomps/src/python/src/python3/CMakeLists.txt	2015-11-30 18:24:37.748571365 +0100
+@@ -1,7 +1,6 @@
+ find_package (PythonLibs 3.0)
+ find_package (PythonInterp 3.0)
+ 
+-execute_process (COMMAND ${PYTHON_EXECUTABLE} -c "from sys import stdout; from distutils import sysconfig; stdout.write(sysconfig.get_python_lib(True))" OUTPUT_VARIABLE PYTHON_INSTALL_DIR)
+ 
+ include_directories(${PYTHON_INCLUDE_PATH})
+ include_directories(${LIBCOMPS_INCLUDE_PATH})

@@ -12,24 +12,30 @@ Summary:	Comps XML file manipulation library
 Summary(pl.UTF-8):	Biblioteka operacji na plikach Comps XML
 Name:		libcomps
 Version:	0.1.6
-Release:	5
+Release:	6
 License:	GPL v2+
 Group:		Libraries
 Source0:	https://github.com/midnightercz/libcomps/archive/%{name}-%{version}.tar.gz
 # Source0-md5:	50611b9564f15b6a06e0f40f7683a0f0
 Patch0:		%{name}-link.patch
+Patch1:		python-install-dir.patch
 URL:		https://github.com/midnightercz/libcomps/
 BuildRequires:	check-devel
 BuildRequires:	cmake >= 2.6
 %{?with_doc:BuildRequires:	doxygen}
 BuildRequires:	expat-devel >= 1.95
 BuildRequires:	libxml2-devel >= 2.0
-%{?with_python2:BuildRequires:	python-devel}
-%{?with_python2:BuildRequires:	python-modules}
-%{?with_python3:BuildRequires:	python3-devel}
-%{?with_python3:BuildRequires:	python3-modules}
-BuildRequires:	rpm-pythonprov
+%if %{with python2}
+BuildRequires:	python-devel
+BuildRequires:	python-modules
+%{?with_doc:BuildRequires:	sphinx-pdg-2}
+%endif
+%if %{with python3}
+BuildRequires:	python3-devel
+BuildRequires:	python3-modules
 %{?with_doc:BuildRequires:	sphinx-pdg}
+%endif
+BuildRequires:	rpm-pythonprov
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -83,12 +89,15 @@ Wiązania Pythona 3.x do biblioteki libcomps.
 %prep
 %setup -qn %{name}-%{name}-%{version}
 %patch0 -p1
+%patch1 -p1
 
 %build
 install -d build
 cd build
 %cmake ../libcomps \
 	-DPYTHON_DESIRED:STRING=2 \
+	-DPYTHON_INSTALL_DIR="%{py_sitedir}" \
+	-DSPHINX_EXECUTABLE=/usr/bin/sphinx-build-2 \
 	-DCMAKE_CXX_COMPILER_WORKS=1 \
 	-DCMAKE_CXX_COMPILER="%{__cc}"
 
@@ -102,10 +111,13 @@ install -d build-py3
 cd build-py3
 %cmake ../libcomps \
 	-DPYTHON_DESIRED:STRING=3 \
+	-DPYTHON_INSTALL_DIR="%{py3_sitedir}" \
+	-DSPHINX_EXECUTABLE=/usr/bin/sphinx-build-3 \
 	-DCMAKE_CXX_COMPILER_WORKS=1 \
 	-DCMAKE_CXX_COMPILER="%{__cc}"
 
 %{__make}
+%{__make} pydocs
 cd ..
 %endif
 
@@ -159,16 +171,18 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/libcomps
 %{_pkgconfigdir}/libcomps.pc
 
+%if %{with python2}
 %files -n python-libcomps
 %defattr(644,root,root,755)
 %doc build/src/python/docs/html/{*.html,*.js,_images,_static}
 %dir %{py_sitedir}/libcomps
 %{py_sitedir}/libcomps/__init__.py[co]
 %attr(755,root,root) %{py_sitedir}/libcomps/_libpycomps.so
+%endif
 
 %if %{with python3}
 %files -n python3-libcomps
-%doc build/src/python/docs/html/{*.html,*.js,_images,_static}
+%doc build-py3/src/python/docs/html/{*.html,*.js,_images,_static}
 %defattr(644,root,root,755)
 %dir %{py3_sitedir}/libcomps
 %{py3_sitedir}/libcomps/__init__.py
