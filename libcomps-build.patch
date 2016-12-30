@@ -1,0 +1,10 @@
+--- libcomps-libcomps-0.1.8/libcomps/src/python/docs/CMakeLists.txt~	2016-09-06 15:17:11.000000000 +0200
++++ libcomps-libcomps-0.1.8/libcomps/src/python/docs/CMakeLists.txt	2016-12-31 00:31:06.264169589 +0100
+@@ -24,7 +24,6 @@ add_custom_target(pydocs)
+ add_dependencies(pydocs pycomps)
+ 
+ include(../pycopy.cmake)
+-add_custom_command(TARGET pydocs PRE_BUILD COMMAND set -E $ENV{LD_LIBRARY_PATH} "${LIBCOMPS_OUT}:$ENV{LD_LIBRARY_PATH}")
+ 
+ add_custom_command(TARGET pydocs COMMAND python${pversion} ${SPHINX_EXECUTABLE} -E -b html
+                                   "${CMAKE_CURRENT_SOURCE_DIR}/doc-sources/"

@@ -11,13 +11,13 @@
 Summary:	Comps XML file manipulation library
 Summary(pl.UTF-8):	Biblioteka operacji na plikach Comps XML
 Name:		libcomps
-Version:	0.1.6
-Release:	7
+Version:	0.1.8
+Release:	1
 License:	GPL v2+
 Group:		Libraries
 Source0:	https://github.com/midnightercz/libcomps/archive/%{name}-%{version}.tar.gz
-# Source0-md5:	50611b9564f15b6a06e0f40f7683a0f0
-Patch0:		%{name}-link.patch
+# Source0-md5:	0461077e6720ea206af8d8bae004a0b7
+Patch0:		%{name}-build.patch
 Patch1:		python-install-dir.patch
 URL:		https://github.com/midnightercz/libcomps/
 BuildRequires:	check-devel
