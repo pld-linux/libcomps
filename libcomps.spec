@@ -15,11 +15,12 @@ Version:	0.1.8
 Release:	1
 License:	GPL v2+
 Group:		Libraries
-Source0:	https://github.com/midnightercz/libcomps/archive/%{name}-%{version}.tar.gz
+#Source0Download: https://github.com/rpm-software-management/libcomps/releases
+Source0:	https://github.com/rpm-software-management/libcomps/archive/%{name}-%{version}.tar.gz
 # Source0-md5:	0461077e6720ea206af8d8bae004a0b7
 Patch0:		%{name}-build.patch
 Patch1:		python-install-dir.patch
-URL:		https://github.com/midnightercz/libcomps/
+URL:		https://github.com/rpm-software-management/libcomps
 BuildRequires:	check-devel
 BuildRequires:	cmake >= 2.6
 %{?with_doc:BuildRequires:	doxygen}
