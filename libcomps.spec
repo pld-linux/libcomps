@@ -11,16 +11,15 @@
 Summary:	Comps XML file manipulation library
 Summary(pl.UTF-8):	Biblioteka operacji na plikach Comps XML
 Name:		libcomps
-Version:	0.1.11
+Version:	0.1.15
 Release:	1
 License:	GPL v2+
 Group:		Libraries
 #Source0Download: https://github.com/rpm-software-management/libcomps/releases
 Source0:	https://github.com/rpm-software-management/libcomps/archive/%{name}-%{version}.tar.gz
-# Source0-md5:	e63cf17441e1c7e167405e364fd52fdd
+# Source0-md5:	5e899d213a28496f3b37236b47293bdf
 Patch0:		%{name}-build.patch
 Patch1:		python-install-dir.patch
-Patch2:		python-3.8.patch
 URL:		https://github.com/rpm-software-management/libcomps
 BuildRequires:	check-devel
 BuildRequires:	cmake >= 2.6
@@ -92,12 +91,12 @@ Wiązania Pythona 3.x do biblioteki libcomps.
 %setup -qn %{name}-%{name}-%{version}
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
 
 %build
 install -d build
 cd build
 %cmake ../libcomps \
+	-DENABLE_TESTS:BOOL=NO \
 	-DPYTHON_DESIRED:STRING=2 \
 	-DPYTHON_INSTALL_DIR="%{py_sitedir}" \
 	-DSPHINX_EXECUTABLE=/usr/bin/sphinx-build-2 \
@@ -113,6 +112,7 @@ cd ..
 install -d build-py3
 cd build-py3
 %cmake ../libcomps \
+	-DENABLE_TESTS:BOOL=NO \
 	-DPYTHON_DESIRED:STRING=3 \
 	-DPYTHON_INSTALL_DIR="%{py3_sitedir}" \
 	-DSPHINX_EXECUTABLE=/usr/bin/sphinx-build-3 \
@@ -165,7 +165,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc README.md COPYING
-%attr(755,root,root) %{_libdir}/libcomps.so.0.1.11
+%attr(755,root,root) %{_libdir}/libcomps.so.0
 
 %files devel
 %defattr(644,root,root,755)
@@ -181,6 +181,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{py_sitedir}/libcomps
 %{py_sitedir}/libcomps/__init__.py[co]
 %attr(755,root,root) %{py_sitedir}/libcomps/_libpycomps.so
+%{py_sitedir}/libcomps-*-py*.egg-info
 %endif
 
 %if %{with python3}
@@ -191,4 +192,5 @@ rm -rf $RPM_BUILD_ROOT
 %{py3_sitedir}/libcomps/__init__.py
 %attr(755,root,root) %{py3_sitedir}/libcomps/_libpycomps.so
 %{py3_sitedir}/libcomps/__pycache__
+%{py3_sitedir}/libcomps-*-py*.egg-info
 %endif

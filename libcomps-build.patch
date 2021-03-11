@@ -1,5 +1,6 @@
---- libcomps-libcomps-0.1.8/libcomps/src/python/docs/CMakeLists.txt~	2016-09-06 15:17:11.000000000 +0200
-+++ libcomps-libcomps-0.1.8/libcomps/src/python/docs/CMakeLists.txt	2016-12-31 00:31:06.264169589 +0100
+diff -urNp -x '*.orig' libcomps-libcomps-0.1.11.org/libcomps/src/python/docs/CMakeLists.txt libcomps-libcomps-0.1.11/libcomps/src/python/docs/CMakeLists.txt
+--- libcomps-libcomps-0.1.11.org/libcomps/src/python/docs/CMakeLists.txt	2019-03-11 08:09:27.000000000 +0100
++++ libcomps-libcomps-0.1.11/libcomps/src/python/docs/CMakeLists.txt	2021-03-07 23:12:47.572339850 +0100
 @@ -24,7 +24,6 @@ add_custom_target(pydocs)
  add_dependencies(pydocs pycomps)
  
