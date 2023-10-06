@@ -1,8 +1,4 @@
 #
-# TODO
-# - fix missing -lm
-# - convince upstream to fix SONAME: libcomps.so.0.1.6
-#
 # Conditional build:
 %bcond_without	doc	# don't build (doxygen and sphinx) docs
 
@@ -119,8 +115,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_pkgconfigdir}/libcomps.pc
 
 %files -n python3-libcomps
-%{?with_doc:%doc build/src/python/docs/html/{*.html,*.js,_static}}
 %defattr(644,root,root,755)
+%if %{with doc}
+%doc build/src/python/docs/html/{*.html,*.js,_static}
+%endif
 %dir %{py3_sitedir}/libcomps
 %{py3_sitedir}/libcomps/__init__.py
 %attr(755,root,root) %{py3_sitedir}/libcomps/_libpycomps.so
