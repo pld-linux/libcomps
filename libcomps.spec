@@ -25,7 +25,7 @@ BuildRequires:	expat-devel >= 1.95
 BuildRequires:	libxml2-devel >= 2.0
 BuildRequires:	python3-devel
 BuildRequires:	python3-modules
-BuildRequires:	rpmbuild(macros) >= 1.605
+BuildRequires:	rpmbuild(macros) >= 1.742
 %{?with_doc:BuildRequires:	sphinx-pdg}
 BuildRequires:	rpm-pythonprov
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -74,10 +74,11 @@ Wiązania Pythona 3.x do biblioteki libcomps.
 install -d build
 cd build
 %cmake ../libcomps \
+	%{cmake_on_off doc ENABLE_DOCS} \
 	-DENABLE_TESTS:BOOL=NO
 
 %{__make}
-%{__make} pydocs
+%{?with_doc:%{__make} pydocs}
 %if %{with tests}
 %{__make} test
 %endif
@@ -118,7 +119,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_pkgconfigdir}/libcomps.pc
 
 %files -n python3-libcomps
-%doc build/src/python/docs/html/{*.html,*.js,_static}
+%{?with_doc:%doc build/src/python/docs/html/{*.html,*.js,_static}}
 %defattr(644,root,root,755)
 %dir %{py3_sitedir}/libcomps
 %{py3_sitedir}/libcomps/__init__.py
