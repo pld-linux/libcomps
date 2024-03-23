@@ -21,6 +21,7 @@ BuildRequires:	expat-devel >= 1.95
 BuildRequires:	libxml2-devel >= 2.0
 BuildRequires:	python3-devel
 BuildRequires:	python3-modules
+BuildRequires:	python3-setuptools
 BuildRequires:	rpmbuild(macros) >= 1.742
 %{?with_doc:BuildRequires:	sphinx-pdg}
 BuildRequires:	rpm-pythonprov
