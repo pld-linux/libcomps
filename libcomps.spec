@@ -6,7 +6,7 @@ Summary:	Comps XML file manipulation library
 Summary(pl.UTF-8):	Biblioteka operacji na plikach Comps XML
 Name:		libcomps
 Version:	0.1.21
-Release:	1
+Release:	
 License:	GPL v2+
 Group:		Libraries
 #Source0Download: https://github.com/rpm-software-management/libcomps/releases
