@@ -1,30 +1,31 @@
 #
 # Conditional build:
-%bcond_without	doc	# don't build (doxygen and sphinx) docs
+%bcond_without	doc	# (doxygen and sphinx) documentation
 
 Summary:	Comps XML file manipulation library
 Summary(pl.UTF-8):	Biblioteka operacji na plikach Comps XML
 Name:		libcomps
-Version:	0.1.21
-Release:	4
+Version:	0.1.24
+Release:	1
 License:	GPL v2+
 Group:		Libraries
 #Source0Download: https://github.com/rpm-software-management/libcomps/releases
 Source0:	https://github.com/rpm-software-management/libcomps/archive/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	1db2dec117d86d3320a88ae372cf0005
+# Source0-md5:	8d07648e6226cd1788381b4a36430935
 Patch0:		%{name}-build.patch
 URL:		https://github.com/rpm-software-management/libcomps
 BuildRequires:	check-devel
-BuildRequires:	cmake >= 2.6
+BuildRequires:	cmake >= 3.10
 %{?with_doc:BuildRequires:	doxygen}
 BuildRequires:	expat-devel >= 1.95
 BuildRequires:	libxml2-devel >= 2.0
 BuildRequires:	python3-devel
 BuildRequires:	python3-modules
 BuildRequires:	python3-setuptools
-BuildRequires:	rpmbuild(macros) >= 1.742
+BuildRequires:	rpmbuild(macros) >= 2.047
 %{?with_doc:BuildRequires:	sphinx-pdg}
 BuildRequires:	rpm-pythonprov
+BuildRequires:	zlib-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -71,8 +72,8 @@ Wiązania Pythona 3.x do biblioteki libcomps.
 install -d build
 cd build
 %cmake ../libcomps \
-	%{cmake_on_off doc ENABLE_DOCS} \
-	-DENABLE_TESTS:BOOL=NO
+	-DENABLE_DOCS:BOOL=%{__ON_OFF doc} \
+	-DENABLE_TESTS:BOOL=OFF
 
 %{__make}
 %{?with_doc:%{__make} pydocs}
@@ -107,11 +108,11 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc README.md COPYING
-%attr(755,root,root) %{_libdir}/libcomps.so.0
+%{_libdir}/libcomps.so.0
 
 %files devel
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libcomps.so
+%{_libdir}/libcomps.so
 %{_includedir}/libcomps
 %{_pkgconfigdir}/libcomps.pc
 
@@ -122,6 +123,6 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 %dir %{py3_sitedir}/libcomps
 %{py3_sitedir}/libcomps/__init__.py
-%attr(755,root,root) %{py3_sitedir}/libcomps/_libpycomps.so
+%{py3_sitedir}/libcomps/_libpycomps.so
 %{py3_sitedir}/libcomps/__pycache__
 %{py3_sitedir}/libcomps-*-py*.egg-info
