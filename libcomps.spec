@@ -1,17 +1,18 @@
 #
 # Conditional build:
 %bcond_without	doc	# (doxygen and sphinx) documentation
+%bcond_without	tests	# unit tests
 
 Summary:	Comps XML file manipulation library
 Summary(pl.UTF-8):	Biblioteka operacji na plikach Comps XML
 Name:		libcomps
-Version:	0.1.24
+Version:	0.1.25
 Release:	1
 License:	GPL v2+
 Group:		Libraries
 #Source0Download: https://github.com/rpm-software-management/libcomps/releases
 Source0:	https://github.com/rpm-software-management/libcomps/archive/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	8d07648e6226cd1788381b4a36430935
+# Source0-md5:	4a70c89e864e39859514a00ef3db8941
 Patch0:		%{name}-build.patch
 URL:		https://github.com/rpm-software-management/libcomps
 BuildRequires:	check-devel
@@ -73,7 +74,7 @@ install -d build
 cd build
 %cmake ../libcomps \
 	-DENABLE_DOCS:BOOL=%{__ON_OFF doc} \
-	-DENABLE_TESTS:BOOL=OFF
+	-DENABLE_TESTS:BOOL=%{__ON_OFF tests}
 
 %{__make}
 %{?with_doc:%{__make} pydocs}
@@ -125,4 +126,4 @@ rm -rf $RPM_BUILD_ROOT
 %{py3_sitedir}/libcomps/__init__.py
 %{py3_sitedir}/libcomps/_libpycomps.so
 %{py3_sitedir}/libcomps/__pycache__
-%{py3_sitedir}/libcomps-*-py*.egg-info
+%{py3_sitedir}/libcomps-%{version}.dist-info
